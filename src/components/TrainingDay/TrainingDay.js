@@ -14,6 +14,7 @@ import Select from '@material-ui/core/Select';
 import clsx from 'clsx';
 import Input from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -76,10 +77,10 @@ function TrainingDay() {
                         1 тренировочный день
                     </Typography>
                     <FormControl className={classes.formControl}>
-                        <InputLabel id="demo-simple-select-helper-label">Упражнение 1</InputLabel>
+                        <InputLabel id="exercise-select-helper-label">Движение 1</InputLabel>
                         <Select
-                            labelId="demo-simple-select-helper-label"
-                            id="demo-simple-select-helper"
+                            labelId="exercise-select-helper-label"
+                            id="exercise-select-helper"
                             value={age}
                             onChange={handleExerciseChange}
                         >
@@ -158,6 +159,7 @@ function TrainingDay() {
                             <FormHelperText>Процент корректировки</FormHelperText>
                         </FormControl>
                     </div>
+                    <Button variant="contained">Добавить движение</Button>
                 </Paper>
             </Grid>
         </Fragment>
