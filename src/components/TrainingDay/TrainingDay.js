@@ -1,4 +1,5 @@
-import React, {Fragment} from "react";
+import React, {Fragment, useState} from "react";
+import axios from "axios"
 
 import Typography from "@material-ui/core/Typography";
 
@@ -11,10 +12,12 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Slider from '@material-ui/core/Slider';
 import clsx from 'clsx';
 import Input from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Button from '@material-ui/core/Button';
+import {withMobileDialog} from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -48,25 +51,47 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
+function valuetext(value) {
+    return `залупа`;
+}
+
+const exercises = [
+    { id: 'squat', name: 'Присед на спине', type: 'pull' },
+    { id: 'benchPress', name: 'Жим лёжа', type: 'push' },
+    { id: 'deadLift', name: 'Становая', type: 'pull'  }
+]
+
+const exercisesFeature = [
+    { id: 'light', name: 'Лёгкое' },
+    { id: 'middle', name: 'Среднее' },
+    { id: 'hard', name: 'Тяжёлое' }
+]
+
+
 function TrainingDay() {
     const classes = useStyles();
-    const [age, setAge] = React.useState('');
-    const handleExerciseChange = (event) => {
-        setAge(event.target.value);
-    }
 
-    const [values, setValues] = React.useState({
-        amount: '',
-        password: '',
-        weight: '',
-        weightRange: '',
+    const [day, setDay] = React.useState({
+        exercise: '',
+        max: '',
         reps: '',
-        showPassword: false,
+        feature: '',
+        adjustment: 0.5,
     });
 
-    const handleChange = (prop) => (event) => {
-        setValues({ ...values, [prop]: event.target.value });
+    const handleDayChange = (prop) => (event) => {
+        setDay({ ...day, [prop]: event.target.value || event.target.newValue });
+        console.log(day)
     };
+
+    const createDayHandler = event => {
+        event.perventDefault();
+        axios.post('https://fast-plan-400cb-default-rtdb.firebaseio.com/Days.json')
+    }
+
+    const pupa = event => {
+        console.log(event.target.input)
+    }
 
 
         return (
@@ -76,88 +101,89 @@ function TrainingDay() {
                     <Typography variant="h5" component="h3" align="center">
                         1 тренировочный день
                     </Typography>
-                    <FormControl className={classes.formControl}>
-                        <InputLabel id="exercise-select-helper-label">Движение 1</InputLabel>
-                        <Select
-                            labelId="exercise-select-helper-label"
-                            id="exercise-select-helper"
-                            value={age}
-                            onChange={handleExerciseChange}
-                        >
-                            <MenuItem value="">
-                                <em>None</em>
-                            </MenuItem>
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
-                        </Select>
-                        <FormHelperText>1ое упражнение</FormHelperText>
-                    </FormControl>
+                    <div>
+                        <hr/>
+                        <FormControl className={classes.formControl}>
+                            {/*<InputLabel id="exercise-select-helper">Движение 1</InputLabel>*/}
+                            <Select
+                                labelId="exercise-select-helper"
+                                id="exercise-select"
+                                value={day.exercise}
+                                onChange={handleDayChange('exercise')}
+                            >
+                                {exercises.map((exercise, i) => {
+                                    return (
+                                        <MenuItem value={exercise.id} key={exercise.id+i}>{exercise.name}</MenuItem>
+                                    )
+                                })}
+                            </Select>
+                            <FormHelperText>1ое упражнение</FormHelperText>
+                            <Button variant="contained" color="secondary">
+                                Удалить
+                            </Button>
+                        </FormControl>
+                    </div>
                     <div>
                         <FormControl className={clsx(classes.margin, classes.withoutLabel, classes.textField)}>
                             <Input
-                                id="standard-adornment-weight"
-                                value={values.weight}
-                                onChange={handleChange('weight')}
+                                id="exercise-weight"
+                                value={day.max}
+                                onChange={handleDayChange('max')}
                                 endAdornment={<InputAdornment position="end">Kg</InputAdornment>}
-                                aria-describedby="standard-weight-helper-text"
+                                aria-describedby="exercise-weight-helper-text"
                                 inputProps={{
                                     'aria-label': 'weight',
                                 }}
                             />
-                            <FormHelperText id="standard-weight-helper-text">Повторный максимум</FormHelperText>
+                            <FormHelperText id="exercise-weight-helper-text">Повторный максимум</FormHelperText>
                         </FormControl>
                         <FormControl className={clsx(classes.margin, classes.withoutLabel, classes.textField)}>
                             <Input
-                                id="standard-adornment-reps"
-                                value={values.reps}
-                                onChange={handleChange('reps')}
+                                id="exercise-reps"
+                                value={day.reps}
+                                onChange={handleDayChange('reps')}
                                 startAdornment={<InputAdornment position="start">×</InputAdornment>}
-                                aria-describedby="standard-reps-helper-text"
+                                aria-describedby="exercise-reps-helper-text"
                                 inputProps={{
                                     'aria-label': 'reps',
                                 }}
                             />
-                            <FormHelperText id="standard-wreps-helper-text">Кол-во повторений</FormHelperText>
+                            <FormHelperText id="exercise-reps-helper-text">Кол-во повторений</FormHelperText>
                         </FormControl>
                     </div>
                     <div>
                         <FormControl className={classes.formControl}>
-                            <InputLabel id="demo-simple-select-helper-label">Тяжёлое</InputLabel>
+                            {/*<InputLabel id="exercise-feature-helper-label">Тяжёлое</InputLabel>*/}
                             <Select
-                                labelId="demo-simple-select-helper-label"
-                                id="demo-simple-select-helper"
-                                value={age}
-                                onChange={handleExerciseChange}
+                                labelId="exercise-feature-helper-label"
+                                id="exercise-feature"
+                                value={day.feature}
+                                onChange={handleDayChange('feature')}
                             >
-                                <MenuItem value="">
-                                    <em>None</em>
-                                </MenuItem>
-                                <MenuItem value={10}>Ten</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
+                                {exercisesFeature.map((feature, i) => {
+                                    return (
+                                        <MenuItem value={feature.id} key={feature.id+i}>{feature.name}</MenuItem>
+                                    )
+                                })}
                             </Select>
                             <FormHelperText>Характер упражнения</FormHelperText>
                         </FormControl>
                     </div>
                     <div>
-                        <FormControl className={classes.formControl}>
-                            <InputLabel id="demo-simple-select-helper-label">55</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-helper-label"
-                                id="demo-simple-select-helper"
-                                value={age}
-                                onChange={handleExerciseChange}
-                            >
-                                <MenuItem value="">
-                                    <em>None</em>
-                                </MenuItem>
-                                <MenuItem value={10}>Ten</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
-                            </Select>
-                            <FormHelperText>Процент корректировки</FormHelperText>
-                        </FormControl>
+                         <Typography id="adjustment-slider" gutterBottom>
+                             Процент корректировки
+                         </Typography>
+                         <Slider
+                             defaultValue={day.adjustment}
+                             aria-labelledby="adjustment-slider"
+                             valueLabelDisplay="auto"
+                             step={0.1}
+                             marks
+                             min={0.1}
+                             max={1.0}
+                             onChange={pupa}
+                         />
+                        <hr/>
                     </div>
                     <Button variant="contained">Добавить движение</Button>
                 </Paper>
