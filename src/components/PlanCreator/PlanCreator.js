@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from "react";
-// import axios from 'axios';
+import axios from 'axios';
 import TrainingDay from "../TrainingDay/TrainingDay";
 
 import Box from "@material-ui/core/Box";
@@ -11,13 +11,19 @@ import Button from "@material-ui/core/Button";
 import {makeStyles} from "@material-ui/core";
 import Exercise from "../TrainingDay/Exercise";
 import Paper from "@material-ui/core/Paper/Paper";
+import {connect} from "react-redux";
 
-function PlanCreator() {
+function PlanCreator(props) {
+
+    console.log('STATE', props);
 
     const [dayNumber, setDay] = React.useState([]);
 
     const addDay = () => {
         setDay([...dayNumber, {}]);
+        props.onAdd();
+        // console.log(dayNumber);
+        // axios.post('https://fast-plan-400cb-default-rtdb.firebaseio.com/days.json', dayNumber);
     };
 
     const deleteDay = (index) => {
@@ -25,7 +31,10 @@ function PlanCreator() {
             [...dayNumber].filter((elem, i) => {
                 return i !== index;
             })
+
+
         );
+        // axios.post('https://fast-plan-400cb-default-rtdb.firebaseio.com/days.json', dayNumber);
     };
 
     const useStyles = makeStyles((theme) => ({
@@ -57,9 +66,9 @@ function PlanCreator() {
           </Typography>
           <Grid container spacing={3}>
 
-              {dayNumber.map((day, i) => {
+              {props.day.map((day, i) => {
                   return (
-                      <Grid item xs={12} sm={4}>
+                      <Grid item xs={12} sm={4} key={`day_${i}`}>
                           <Paper className={classes.paper}>
                               <Typography variant="h5" component="h3" align="center">
                                   {i + 1} тренировочный день
@@ -72,7 +81,7 @@ function PlanCreator() {
                                   {" "}
                                   Удалить день{" "}
                               </Button>
-                              <Fragment key={`day_${i}`} className={classes.day}>
+                              <Fragment>
                                   <TrainingDay/>
                               </Fragment>
                           </Paper>
@@ -90,4 +99,17 @@ function PlanCreator() {
   );
 }
 
-export default PlanCreator;
+function mapStateToProps(state) {
+    return {
+        day: state.day
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        onAdd: () => dispatch({type: 'ADD'}),
+        onSub: () => dispatch({type: 'SUB'})
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PlanCreator);

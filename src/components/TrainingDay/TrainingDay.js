@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from "react";
 import Exercise from "./Exercise";
 import axios from "axios";
+import {connect} from "react-redux";
 
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
@@ -19,6 +20,7 @@ function TrainingDay() {
 
   const addExercise = () => {
     setNumber([...exercisesNumber, {}]);
+      console.log(exercisesNumber)
   };
 
   const deleteExercise = (index) => {
@@ -56,6 +58,18 @@ function TrainingDay() {
       </Button>
     </Fragment>
   );
+}
+
+function mapStateToProps(state) {
+    return {
+        state: state
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+
+    }
 }
 
 export default TrainingDay;
