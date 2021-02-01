@@ -15,61 +15,66 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function TrainingDay() {
+function TrainingDay(props) {
   const [exercisesNumber, setNumber] = React.useState([]);
+    // console.log(props.dayNumber)
+  // const addExercise = () => {
+  //   setNumber([...exercisesNumber, {}]);
+  //     console.log(exercisesNumber)
+  //     props.addExercise();
+  // };
 
-  const addExercise = () => {
-    setNumber([...exercisesNumber, {}]);
-      console.log(exercisesNumber)
-  };
-
-  const deleteExercise = (index) => {
-    setNumber(
-      [...exercisesNumber].filter((elem, i) => {
-        return i !== index;
-      })
-    );
-  };
+  // const deleteExercise = (index) => {
+  //   setNumber(
+  //     [...exercisesNumber].filter((elem, i) => {
+  //       return i !== index;
+  //     })
+  //   );
+  // };
 
   const classes = useStyles();
 
   return (
     <Fragment>
 
-      {exercisesNumber.map((exercise, i) => {
+      {props.day[props.dayNumber].map((exercise, i) => {
         return (
           <Fragment key={`exercise_${i}`}>
             <Exercise number={i + 1} />
             <Button
               variant="contained"
               color="secondary"
-              onClick={() => deleteExercise(i)}
+              // onClick={() => deleteExercise(i)}
             >
               {" "}
-              Удалить движение{" "}
+              Удалить{" "}
             </Button>
           </Fragment>
         );
       })}
 
       <hr />
-      <Button variant="contained" onClick={addExercise}>
+      <Button variant="contained" onClick={() => props.addExercise(props.dayNumber)}>
         Добавить движение
       </Button>
     </Fragment>
   );
 }
 
+
 function mapStateToProps(state) {
     return {
-        state: state
+        day: state.day
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-
+        addExercise: number => dispatch({type: 'ADD_EXERCISE' , payload: number}),
+        subExercise: number => dispatch({type: 'SUB_EXERCISE', payload: number})
     }
 }
 
-export default TrainingDay;
+export default connect(mapStateToProps, mapDispatchToProps)(TrainingDay);
+
+

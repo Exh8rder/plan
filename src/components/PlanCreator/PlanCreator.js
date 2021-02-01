@@ -32,7 +32,6 @@ function PlanCreator(props) {
                 return i !== index;
             })
 
-
         );
         // axios.post('https://fast-plan-400cb-default-rtdb.firebaseio.com/days.json', dayNumber);
     };
@@ -76,20 +75,20 @@ function PlanCreator(props) {
                               <Button
                                   variant="contained"
                                   color="secondary"
-                                  onClick={() => deleteDay(i)}
+                                  onClick={() => props.onSub(i)}
                               >
                                   {" "}
                                   Удалить день{" "}
                               </Button>
                               <Fragment>
-                                  <TrainingDay/>
+                                  <TrainingDay dayNumber = {i}/>
                               </Fragment>
                           </Paper>
                       </Grid>
                   );
               })}
 
-              <Button variant="contained" color="primary" className={classes.button} onClick={addDay}>
+              <Button variant="contained" color="primary" className={classes.button} onClick={props.onAdd}>
                   +
               </Button>
           </Grid>
@@ -108,7 +107,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         onAdd: () => dispatch({type: 'ADD'}),
-        onSub: () => dispatch({type: 'SUB'})
+        onSub: number => dispatch({type: 'SUB', payload: number})
     }
 }
 

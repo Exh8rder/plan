@@ -8,15 +8,28 @@ export default function rootReducer(state = initialState, action) {
             return {
                 day: [...state.day, []]
             }
+
         case 'SUB' :
             return {
-                state
+                day: [...state.day].filter((arr, i) => i !== action.payload)
+            }
+
+        case 'ADD_EXERCISE' :
+            return {
+
+                day: [...state.day].map(function(item, index, array) {
+                    if(index === action.payload) {
+                        // console.log(item)
+                        return [...item, [action.payload]];
+                    } else {
+                        return item
+                    }
+                })
             }
 
         default:
             return state
     }
-
 
 }
 
