@@ -15,7 +15,7 @@ import {connect} from "react-redux";
 
 function PlanCreator(props) {
 
-    console.log('STATE', props);
+    // console.log('STATE', props);
 
     const [dayNumber, setDay] = React.useState([]);
 

@@ -22,7 +22,20 @@ export default function rootReducer(state = initialState, action) {
                         // console.log(item)
                         return [...item, [action.payload]];
                     } else {
-                        return item
+                        return [...item]
+                    }
+                })
+            }
+
+        case 'SUB_EXERCISE' :
+            return {
+
+                day: [...state.day].map(function(item, index, array) {
+                    if(index === action.dayPayload) {
+                        // console.log(item);
+                        return [...item].filter((arr, i) => i !== action.payload);
+                    } else {
+                        return [...item]
                     }
                 })
             }

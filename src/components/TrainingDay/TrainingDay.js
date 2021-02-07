@@ -44,7 +44,7 @@ function TrainingDay(props) {
             <Button
               variant="contained"
               color="secondary"
-              // onClick={() => deleteExercise(i)}
+              onClick={() => props.subExercise(i, props.dayNumber)}
             >
               {" "}
               Удалить{" "}
@@ -71,7 +71,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         addExercise: number => dispatch({type: 'ADD_EXERCISE' , payload: number}),
-        subExercise: number => dispatch({type: 'SUB_EXERCISE', payload: number})
+        subExercise: (number, dayNumber) => dispatch({type: 'SUB_EXERCISE', payload: number, dayPayload: dayNumber})
     }
 }
 
