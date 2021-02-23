@@ -6,10 +6,9 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import clsx from "clsx";
 import Input from "@material-ui/core/Input/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
-import Typography from "@material-ui/core/Typography";
-import Slider from "@material-ui/core/Slider";
 import { makeStyles } from "@material-ui/core";
 import axios from "axios";
+import {connect} from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,10 +56,10 @@ function Exercise(props) {
   const classes = useStyles();
 
   const [day, setDay] = React.useState({
-    exercise: "",
+    exercise: "squat",
     max: "",
     reps: "",
-    feature: "",
+    feature: "light",
     adjustment: "0.5",
   });
 
@@ -72,10 +71,18 @@ function Exercise(props) {
     console.log(day);
   };
 
+    const handleInputChange = (event, prop) => {
+        const { value } = event.target;
+        props.handleDayChange(prop, value, props.number, props.dayNumber);
+
+    }
+
   const createDayHandler = (event) => {
     event.perventDefault();
     axios.post("https://fast-plan-400cb-default-rtdb.firebaseio.com/Days.json");
   };
+
+  const currentExerciseState = props.day[props.dayNumber][props.number];
 
   return (
     <Fragment>
@@ -86,7 +93,7 @@ function Exercise(props) {
           <Select
             labelId="exercise-select-helper"
             id="exercise-select"
-            value={day.exercise}
+            value={currentExerciseState.exercise}
             onChange={handleDayChange("exercise")}
           >
             {exercises.map((exercise, i) => {
@@ -97,7 +104,7 @@ function Exercise(props) {
               );
             })}
           </Select>
-          <FormHelperText>Упражнение {props.number}</FormHelperText>
+          <FormHelperText>Упражнение {props.number+1}</FormHelperText>
         </FormControl>
       </div>
       <div>
@@ -110,8 +117,8 @@ function Exercise(props) {
         >
           <Input
             id="exercise-weight"
-            value={day.max}
-            onChange={handleDayChange("max")}
+            value={currentExerciseState.max}
+            onChange={(event)=>handleInputChange(event, "max" )}
             endAdornment={<InputAdornment position="end">Kg</InputAdornment>}
             aria-describedby="exercise-weight-helper-text"
             inputProps={{
@@ -131,7 +138,7 @@ function Exercise(props) {
         >
           <Input
             id="exercise-reps"
-            value={day.reps}
+            value={currentExerciseState.reps}
             onChange={handleDayChange("reps")}
             startAdornment={<InputAdornment position="start">×</InputAdornment>}
             aria-describedby="exercise-reps-helper-text"
@@ -150,7 +157,7 @@ function Exercise(props) {
           <Select
             labelId="exercise-feature-helper-label"
             id="exercise-feature"
-            value={day.feature}
+            value={currentExerciseState.feature}
             onChange={handleDayChange("feature")}
           >
             {exercisesFeature.map((feature, i) => {
@@ -165,23 +172,45 @@ function Exercise(props) {
         </FormControl>
       </div>
       <div>
-        <Typography id="adjustment-slider" gutterBottom>
-          Процент корректировки
-        </Typography>
-        <Slider
-          // defaultValue={day.adjustment}
-          aria-valuenow={day.adjustment}
-          aria-labelledby="adjustment-slider"
-          valueLabelDisplay="auto"
-          step={0.1}
-          marks
-          min={0.1}
-          max={1.0}
-          onChange={handleDayChange("adjustment")}
-        />
+
+          <FormControl
+              className={clsx(
+                  classes.margin,
+                  classes.withoutLabel,
+                  classes.textField
+              )}
+          >
+              <Input
+                  id="exercise-adjustment"
+                  value={currentExerciseState.adjustment}
+                  onChange={handleDayChange("adjustment")}
+                  endAdornment={<InputAdornment position="end">Kg</InputAdornment>}
+                  aria-describedby="exercise-adjustment-helper-text"
+                  inputProps={{
+                      "aria-label": "adjustment",
+                  }}
+              />
+              <FormHelperText id="exercise-adjustment-helper-text">
+                  Процент корректировки (0.1 - 1.0)
+              </FormHelperText>
+          </FormControl>
       </div>
     </Fragment>
   );
 }
 
-export default Exercise;
+function mapStateToProps(state) {
+    return {
+        day: state.day
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        handleDayChange: (prop, number, exNumber, dayNumber) => dispatch({type: 'HANDLE_DAY_CHANGE' , property: prop, payload: number, exNumber: exNumber, dayNumber: dayNumber})
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Exercise);
+
+

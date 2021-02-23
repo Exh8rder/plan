@@ -15,12 +15,19 @@ export default function rootReducer(state = initialState, action) {
             }
 
         case 'ADD_EXERCISE' :
-            return {
 
+            return {
                 day: [...state.day].map(function(item, index, array) {
+                    // console.log(item);
                     if(index === action.payload) {
                         // console.log(item)
-                        return [...item, [action.payload]];
+                        return [...item, {
+                            exercise: "squat",
+                            max: "100",
+                            reps: "1",
+                            feature: "light",
+                            adjustment: "0.5",
+                        }];
                     } else {
                         return [...item]
                     }
@@ -32,12 +39,42 @@ export default function rootReducer(state = initialState, action) {
 
                 day: [...state.day].map(function(item, index, array) {
                     if(index === action.dayPayload) {
-                        // console.log(item);
                         return [...item].filter((arr, i) => i !== action.payload);
                     } else {
                         return [...item]
                     }
                 })
+            }
+
+        case 'HANDLE_DAY_CHANGE' :
+
+            console.log(action.property, action.payload, action.exNumber, action.dayNumber);
+
+            return {
+
+                day: [...state.day].map(function(item, index, array) {
+                    if(index === action.dayNumber) {
+
+                        return [...item].map(function(ex, i) {
+
+                            let newObj = JSON.parse(JSON.stringify(ex));
+
+                            if(i === action.exNumber) {
+
+                                console.log(newObj);
+                                return newObj[action.property] = action.payload;
+
+                            } else {
+                                return newObj;
+                            }
+
+                        })
+
+                    } else {
+                        return [...item]
+                    }
+                })
+
             }
 
         default:

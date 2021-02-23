@@ -40,7 +40,7 @@ function TrainingDay(props) {
       {props.day[props.dayNumber].map((exercise, i) => {
         return (
           <Fragment key={`exercise_${i}`}>
-            <Exercise number={i + 1} />
+            <Exercise number={i} dayNumber={props.dayNumber} />
             <Button
               variant="contained"
               color="secondary"
