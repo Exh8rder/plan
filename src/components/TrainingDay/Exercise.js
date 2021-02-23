@@ -94,7 +94,7 @@ function Exercise(props) {
             labelId="exercise-select-helper"
             id="exercise-select"
             value={currentExerciseState.exercise}
-            onChange={handleDayChange("exercise")}
+            onChange={(event)=>handleInputChange(event, "exercise" )}
           >
             {exercises.map((exercise, i) => {
               return (
@@ -139,7 +139,7 @@ function Exercise(props) {
           <Input
             id="exercise-reps"
             value={currentExerciseState.reps}
-            onChange={handleDayChange("reps")}
+            onChange={(event)=>handleInputChange(event, "reps" )}
             startAdornment={<InputAdornment position="start">×</InputAdornment>}
             aria-describedby="exercise-reps-helper-text"
             inputProps={{
@@ -158,7 +158,7 @@ function Exercise(props) {
             labelId="exercise-feature-helper-label"
             id="exercise-feature"
             value={currentExerciseState.feature}
-            onChange={handleDayChange("feature")}
+            onChange={(event)=>handleInputChange(event, "feature" )}
           >
             {exercisesFeature.map((feature, i) => {
               return (
@@ -183,7 +183,7 @@ function Exercise(props) {
               <Input
                   id="exercise-adjustment"
                   value={currentExerciseState.adjustment}
-                  onChange={handleDayChange("adjustment")}
+                  onChange={(event)=>handleInputChange(event, "adjustment" )}
                   endAdornment={<InputAdornment position="end">Kg</InputAdornment>}
                   aria-describedby="exercise-adjustment-helper-text"
                   inputProps={{
