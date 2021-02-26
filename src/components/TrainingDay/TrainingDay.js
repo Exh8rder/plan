@@ -1,60 +1,34 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import Exercise from "./Exercise";
-import axios from "axios";
-import {connect} from "react-redux";
+import {connect, useDispatch, useSelector} from "react-redux";
 
-import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    flexWrap: "wrap",
-  },
-}));
-
 function TrainingDay(props) {
-  const [exercisesNumber, setNumber] = React.useState([]);
-    // console.log(props.dayNumber)
-  // const addExercise = () => {
-  //   setNumber([...exercisesNumber, {}]);
-  //     console.log(exercisesNumber)
-  //     props.addExercise();
-  // };
 
-  // const deleteExercise = (index) => {
-  //   setNumber(
-  //     [...exercisesNumber].filter((elem, i) => {
-  //       return i !== index;
-  //     })
-  //   );
-  // };
-
-  const classes = useStyles();
+    const dispatch = useDispatch();
+    const week = useSelector(state => state.week);
 
   return (
     <Fragment>
 
-      {props.day[props.dayNumber].map((exercise, i) => {
+      {week[props.dayNumber].map((exercise, i) => {
         return (
           <Fragment key={`exercise_${i}`}>
-            <Exercise number={i} dayNumber={props.dayNumber} />
+            <Exercise exerciseNumber={i} dayNumber={props.dayNumber} />
             <Button
               variant="contained"
               color="secondary"
-              onClick={() => props.subExercise(i, props.dayNumber)}
+              onClick={() => dispatch(subExercise(i, props.dayNumber))}
             >
-              {" "}
-              Удалить{" "}
+              Удалить
             </Button>
           </Fragment>
         );
       })}
 
       <hr />
-      <Button variant="contained" onClick={() => props.addExercise(props.dayNumber)}>
+      <Button variant="contained" onClick={() => dispatch(addExercise(props.dayNumber))}>
         Добавить движение
       </Button>
     </Fragment>
@@ -62,19 +36,9 @@ function TrainingDay(props) {
 }
 
 
-function mapStateToProps(state) {
-    return {
-        day: state.day
-    }
-}
+const addExercise = (number) => ({type: 'ADD_EXERCISE' , dayNumber: number})
+const subExercise = (number, dayNumber) => ({type: 'SUB_EXERCISE', exerciseNumber: number, dayNumber: dayNumber})
 
-function mapDispatchToProps(dispatch) {
-    return {
-        addExercise: number => dispatch({type: 'ADD_EXERCISE' , payload: number}),
-        subExercise: (number, dayNumber) => dispatch({type: 'SUB_EXERCISE', payload: number, dayPayload: dayNumber})
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TrainingDay);
+export default TrainingDay;
 
 

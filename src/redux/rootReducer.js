@@ -1,26 +1,24 @@
 const initialState = {
-    day: []
+    week: []
 };
 export default function rootReducer(state = initialState, action) {
 
     switch(action.type) {
-        case 'ADD' :
+        case 'ADD_DAY' :
             return {
-                day: [...state.day, []]
+                week: [...state.week, []]
             }
 
-        case 'SUB' :
+        case 'SUB_DAY' :
             return {
-                day: state.day.filter((arr, i) => i !== action.payload)
+                week: state.week.filter((arr, i) => i !== action.dayNumber)
             }
 
         case 'ADD_EXERCISE' :
 
             return {
-                day: state.day.map(function(item, index, array) {
-                    // console.log(item);
-                    if(index === action.payload) {
-                        // console.log(item)
+                week: state.week.map(function(item, index) {
+                    if(index === action.dayNumber) {
                         return [...item, {
                             exercise: "squat",
                             max: "100",
@@ -35,35 +33,31 @@ export default function rootReducer(state = initialState, action) {
             }
 
         case 'SUB_EXERCISE' :
-            return {
 
-                day: [...state.day].map(function(item, index, array) {
-                    if(index === action.dayPayload) {
-                        return [...item].filter((arr, i) => i !== action.payload);
+            return {
+                week: state.week.map(function(item, index) {
+                    if(index === action.dayNumber) {
+                        return item.filter((arr, i) => i !== action.exerciseNumber);
                     } else {
-                        return [...item]
+                        return item
                     }
                 })
             }
 
-        case 'HANDLE_DAY_CHANGE' :
-
-            console.log(state.day);
+        case 'HANDLE_EXERCISE_CHANGE' :
 
             return {
 
-                day: state.day.map(function(item, index, array) {
+                week: state.week.map(function(item, index) {
                     if(index === action.dayNumber) {
 
-                        return [...item].map(function(ex, i) {
+                        return item.map(function(exercise, i) {
 
-                            let newObj = JSON.parse(JSON.stringify(ex));
+                            let newObj = JSON.parse(JSON.stringify(exercise));
 
-                            if(i === action.exNumber) {
+                            if(i === action.exerciseNumber) {
 
-                                console.log(newObj);
-                               newObj[action.property] = action.payload;
-
+                                newObj[action.property] = action.value;
 
                             }
                                 return newObj;
@@ -72,10 +66,9 @@ export default function rootReducer(state = initialState, action) {
                         })
 
                     } else {
-                        return [...item]
+                        return item
                     }
                 })
-
             }
 
         default:

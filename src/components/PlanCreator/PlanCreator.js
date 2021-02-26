@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useReducer } from "react";
 import axios from 'axios';
 import TrainingDay from "../TrainingDay/TrainingDay";
 
@@ -9,32 +9,13 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import {makeStyles} from "@material-ui/core";
-import Exercise from "../TrainingDay/Exercise";
 import Paper from "@material-ui/core/Paper/Paper";
-import {connect} from "react-redux";
+import {connect, useDispatch, useSelector} from "react-redux";
 
 function PlanCreator(props) {
 
-    // console.log('STATE', props);
-
-    const [dayNumber, setDay] = React.useState([]);
-
-    const addDay = () => {
-        setDay([...dayNumber, {}]);
-        props.onAdd();
-        // console.log(dayNumber);
-        // axios.post('https://fast-plan-400cb-default-rtdb.firebaseio.com/days.json', dayNumber);
-    };
-
-    const deleteDay = (index) => {
-        setDay(
-            [...dayNumber].filter((elem, i) => {
-                return i !== index;
-            })
-
-        );
-        // axios.post('https://fast-plan-400cb-default-rtdb.firebaseio.com/days.json', dayNumber);
-    };
+    const dispatch = useDispatch();
+    const week = useSelector(state => state.week);
 
     const useStyles = makeStyles((theme) => ({
 
@@ -65,7 +46,7 @@ function PlanCreator(props) {
           </Typography>
           <Grid container spacing={3}>
 
-              {props.day.map((day, i) => {
+              {week.map((day, i) => {
                   return (
                       <Grid item xs={12} sm={4} key={`day_${i}`}>
                           <Paper className={classes.paper}>
@@ -75,10 +56,9 @@ function PlanCreator(props) {
                               <Button
                                   variant="contained"
                                   color="secondary"
-                                  onClick={() => props.onSub(i)}
+                                  onClick={() => dispatch(subDay(i))}
                               >
-                                  {" "}
-                                  Удалить день{" "}
+                                  Удалить день
                               </Button>
                               <Fragment>
                                   <TrainingDay dayNumber = {i}/>
@@ -88,7 +68,7 @@ function PlanCreator(props) {
                   );
               })}
 
-              <Button variant="contained" color="primary" className={classes.button} onClick={props.onAdd}>
+              <Button variant="contained" color="primary" className={classes.button} onClick={()=> dispatch(addDay())}>
                   +
               </Button>
           </Grid>
@@ -98,17 +78,10 @@ function PlanCreator(props) {
   );
 }
 
-function mapStateToProps(state) {
-    return {
-        day: state.day
-    }
-}
 
-function mapDispatchToProps(dispatch) {
-    return {
-        onAdd: () => dispatch({type: 'ADD'}),
-        onSub: number => dispatch({type: 'SUB', payload: number})
-    }
-}
+const addDay = () => ({type: 'ADD_DAY'})
+const subDay = (number) => ({type: 'SUB_DAY', dayNumber: number})
 
-export default connect(mapStateToProps, mapDispatchToProps)(PlanCreator);
+
+
+export default PlanCreator;

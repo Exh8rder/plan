@@ -7,8 +7,7 @@ import clsx from "clsx";
 import Input from "@material-ui/core/Input/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import { makeStyles } from "@material-ui/core";
-import axios from "axios";
-import {connect} from "react-redux";
+import {connect, useDispatch, useSelector} from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,164 +52,137 @@ const exercisesFeature = [
 ];
 
 function Exercise(props) {
-  const classes = useStyles();
+    const classes = useStyles();
 
-  const [day, setDay] = React.useState({
-    exercise: "squat",
-    max: "",
-    reps: "",
-    feature: "light",
-    adjustment: "0.5",
-  });
-
-  const handleDayChange = (prop) => (event) => {
-    setDay({
-      ...day,
-      [prop]: event.target.value || event.target.getAttribute("aria-valuenow"),
-    });
-    console.log(day);
-  };
+    const dispatch = useDispatch();
+    const week = useSelector(state => state.week);
 
     const handleInputChange = (event, prop) => {
         const { value } = event.target;
-        props.handleDayChange(prop, value, props.number, props.dayNumber);
+        dispatch(handleExerciseChange(prop, value, props.exerciseNumber, props.dayNumber));
 
     }
 
-  const createDayHandler = (event) => {
-    event.perventDefault();
-    axios.post("https://fast-plan-400cb-default-rtdb.firebaseio.com/Days.json");
-  };
+    const currentExerciseState = week[props.dayNumber][props.exerciseNumber];
 
-  const currentExerciseState = props.day[props.dayNumber][props.number];
-
-  return (
-    <Fragment>
-      <div>
-        <hr />
-        <FormControl className={classes.formControl}>
-          {/*<InputLabel id="exercise-select-helper">Движение 1</InputLabel>*/}
-          <Select
-            labelId="exercise-select-helper"
-            id="exercise-select"
-            value={currentExerciseState.exercise}
-            onChange={(event)=>handleInputChange(event, "exercise" )}
-          >
-            {exercises.map((exercise, i) => {
-              return (
-                <MenuItem value={exercise.id} key={exercise.id + i}>
-                  {exercise.name}
-                </MenuItem>
-              );
-            })}
-          </Select>
-          <FormHelperText>Упражнение {props.number+1}</FormHelperText>
-        </FormControl>
-      </div>
-      <div>
-        <FormControl
-          className={clsx(
-            classes.margin,
-            classes.withoutLabel,
-            classes.textField
-          )}
-        >
-          <Input
-            id="exercise-weight"
-            value={currentExerciseState.max}
-            onChange={(event)=>handleInputChange(event, "max" )}
-            endAdornment={<InputAdornment position="end">Kg</InputAdornment>}
-            aria-describedby="exercise-weight-helper-text"
-            inputProps={{
-              "aria-label": "weight",
-            }}
-          />
-          <FormHelperText id="exercise-weight-helper-text">
-            Повторный максимум
-          </FormHelperText>
-        </FormControl>
-        <FormControl
-          className={clsx(
-            classes.margin,
-            classes.withoutLabel,
-            classes.textField
-          )}
-        >
-          <Input
-            id="exercise-reps"
-            value={currentExerciseState.reps}
-            onChange={(event)=>handleInputChange(event, "reps" )}
-            startAdornment={<InputAdornment position="start">×</InputAdornment>}
-            aria-describedby="exercise-reps-helper-text"
-            inputProps={{
-              "aria-label": "reps",
-            }}
-          />
-          <FormHelperText id="exercise-reps-helper-text">
-            Кол-во повторений
-          </FormHelperText>
-        </FormControl>
-      </div>
-      <div>
-        <FormControl className={classes.formControl}>
-          {/*<InputLabel id="exercise-feature-helper-label">Тяжёлое</InputLabel>*/}
-          <Select
-            labelId="exercise-feature-helper-label"
-            id="exercise-feature"
-            value={currentExerciseState.feature}
-            onChange={(event)=>handleInputChange(event, "feature" )}
-          >
-            {exercisesFeature.map((feature, i) => {
-              return (
-                <MenuItem value={feature.id} key={feature.id + i}>
-                  {feature.name}
-                </MenuItem>
-              );
-            })}
-          </Select>
-          <FormHelperText>Характер упражнения</FormHelperText>
-        </FormControl>
-      </div>
-      <div>
-
-          <FormControl
+    return (
+        <Fragment>
+          <div>
+            <hr />
+            <FormControl className={classes.formControl}>
+              <Select
+                labelId="exercise-select-helper"
+                id="exercise-select"
+                value={currentExerciseState.exercise}
+                onChange={(event)=>handleInputChange(event, "exercise" )}
+              >
+                {exercises.map((exercise, i) => {
+                  return (
+                    <MenuItem value={exercise.id} key={exercise.id + i}>
+                      {exercise.name}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+              <FormHelperText>Упражнение {props.exerciseNumber+1}</FormHelperText>
+            </FormControl>
+          </div>
+          <div>
+            <FormControl
               className={clsx(
-                  classes.margin,
-                  classes.withoutLabel,
-                  classes.textField
+                classes.margin,
+                classes.withoutLabel,
+                classes.textField
               )}
-          >
+            >
               <Input
-                  id="exercise-adjustment"
-                  value={currentExerciseState.adjustment}
-                  onChange={(event)=>handleInputChange(event, "adjustment" )}
-                  endAdornment={<InputAdornment position="end">Kg</InputAdornment>}
-                  aria-describedby="exercise-adjustment-helper-text"
-                  inputProps={{
-                      "aria-label": "adjustment",
-                  }}
+                id="exercise-weight"
+                value={currentExerciseState.max}
+                onChange={(event)=>handleInputChange(event, "max" )}
+                endAdornment={<InputAdornment position="end">Kg</InputAdornment>}
+                aria-describedby="exercise-weight-helper-text"
+                inputProps={{
+                  "aria-label": "weight",
+                }}
               />
-              <FormHelperText id="exercise-adjustment-helper-text">
-                  Процент корректировки (0.1 - 1.0)
+              <FormHelperText id="exercise-weight-helper-text">
+                Повторный максимум
               </FormHelperText>
-          </FormControl>
-      </div>
-    </Fragment>
-  );
+            </FormControl>
+            <FormControl
+              className={clsx(
+                classes.margin,
+                classes.withoutLabel,
+                classes.textField
+              )}
+            >
+              <Input
+                id="exercise-reps"
+                value={currentExerciseState.reps}
+                onChange={(event)=>handleInputChange(event, "reps" )}
+                startAdornment={<InputAdornment position="start">×</InputAdornment>}
+                aria-describedby="exercise-reps-helper-text"
+                inputProps={{
+                  "aria-label": "reps",
+                }}
+              />
+              <FormHelperText id="exercise-reps-helper-text">
+                Кол-во повторений
+              </FormHelperText>
+            </FormControl>
+          </div>
+          <div>
+            <FormControl className={classes.formControl}>
+              {/*<InputLabel id="exercise-feature-helper-label">Тяжёлое</InputLabel>*/}
+              <Select
+                labelId="exercise-feature-helper-label"
+                id="exercise-feature"
+                value={currentExerciseState.feature}
+                onChange={(event)=>handleInputChange(event, "feature" )}
+              >
+                {exercisesFeature.map((feature, i) => {
+                  return (
+                    <MenuItem value={feature.id} key={feature.id + i}>
+                      {feature.name}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+              <FormHelperText>Характер упражнения</FormHelperText>
+            </FormControl>
+          </div>
+          <div>
+
+              <FormControl
+                  className={clsx(
+                      classes.margin,
+                      classes.withoutLabel,
+                      classes.textField
+                  )}
+              >
+                  <Input
+                      id="exercise-adjustment"
+                      value={currentExerciseState.adjustment}
+                      onChange={(event)=>handleInputChange(event, "adjustment" )}
+                      endAdornment={<InputAdornment position="end">Kg</InputAdornment>}
+                      aria-describedby="exercise-adjustment-helper-text"
+                      inputProps={{
+                          "aria-label": "adjustment",
+                      }}
+                  />
+                  <FormHelperText id="exercise-adjustment-helper-text">
+                      Процент корректировки (0.1 - 1.0)
+                  </FormHelperText>
+              </FormControl>
+          </div>
+        </Fragment>
+    );
 }
 
-function mapStateToProps(state) {
-    return {
-        day: state.day
-    }
-}
 
-function mapDispatchToProps(dispatch) {
-    return {
-        handleDayChange: (prop, number, exNumber, dayNumber) => dispatch({type: 'HANDLE_DAY_CHANGE' , property: prop, payload: number, exNumber: exNumber, dayNumber: dayNumber})
-    }
-}
+const handleExerciseChange = (prop, number, exerciseNumber, dayNumber) => ({type: 'HANDLE_EXERCISE_CHANGE', property: prop, value: number, exerciseNumber: exerciseNumber, dayNumber: dayNumber})
 
-export default connect(mapStateToProps, mapDispatchToProps)(Exercise);
+
+export default Exercise;
 
 
