@@ -1,20 +1,22 @@
+import {ADD_DAY, ADD_EXERCISE, HANDLE_EXERCISE_FIELD_CHANGE, SUB_DAY, SUB_EXERCISE} from "./actionTypes";
+
 const initialState = {
     week: []
 };
 export default function rootReducer(state = initialState, action) {
 
     switch(action.type) {
-        case 'ADD_DAY' :
+        case ADD_DAY :
             return {
                 week: [...state.week, []]
             }
 
-        case 'SUB_DAY' :
+        case SUB_DAY :
             return {
                 week: state.week.filter((arr, i) => i !== action.dayNumber)
             }
 
-        case 'ADD_EXERCISE' :
+        case ADD_EXERCISE :
 
             return {
                 week: state.week.map(function(item, index) {
@@ -32,7 +34,7 @@ export default function rootReducer(state = initialState, action) {
                 })
             }
 
-        case 'SUB_EXERCISE' :
+        case SUB_EXERCISE :
 
             return {
                 week: state.week.map(function(item, index) {
@@ -44,7 +46,7 @@ export default function rootReducer(state = initialState, action) {
                 })
             }
 
-        case 'HANDLE_EXERCISE_CHANGE' :
+        case HANDLE_EXERCISE_FIELD_CHANGE :
 
             return {
 

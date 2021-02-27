@@ -3,6 +3,8 @@ import Exercise from "./Exercise";
 import {connect, useDispatch, useSelector} from "react-redux";
 
 import Button from "@material-ui/core/Button";
+import {ADD_EXERCISE, SUB_EXERCISE} from "../../redux/actionTypes";
+import {addExerciseAction, subExerciseAction} from "../../redux/actions";
 
 function TrainingDay(props) {
 
@@ -36,8 +38,8 @@ function TrainingDay(props) {
 }
 
 
-const addExercise = (number) => ({type: 'ADD_EXERCISE' , dayNumber: number})
-const subExercise = (number, dayNumber) => ({type: 'SUB_EXERCISE', exerciseNumber: number, dayNumber: dayNumber})
+const addExercise = (number) => (addExerciseAction(number))
+const subExercise = (number, dayNumber) => (subExerciseAction(number, dayNumber))
 
 export default TrainingDay;
 

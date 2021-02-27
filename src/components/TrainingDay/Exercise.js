@@ -8,6 +8,8 @@ import Input from "@material-ui/core/Input/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import { makeStyles } from "@material-ui/core";
 import {connect, useDispatch, useSelector} from "react-redux";
+import {HANDLE_EXERCISE_FIELD_CHANGE} from "../../redux/actionTypes";
+import {handleExerciseChangeAction} from "../../redux/actions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -180,7 +182,7 @@ function Exercise(props) {
 }
 
 
-const handleExerciseChange = (prop, number, exerciseNumber, dayNumber) => ({type: 'HANDLE_EXERCISE_CHANGE', property: prop, value: number, exerciseNumber: exerciseNumber, dayNumber: dayNumber})
+const handleExerciseChange = (prop, number, exerciseNumber, dayNumber) => (handleExerciseChangeAction(prop, number, exerciseNumber, dayNumber))
 
 
 export default Exercise;

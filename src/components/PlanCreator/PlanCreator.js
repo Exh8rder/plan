@@ -11,6 +11,8 @@ import Button from "@material-ui/core/Button";
 import {makeStyles} from "@material-ui/core";
 import Paper from "@material-ui/core/Paper/Paper";
 import {connect, useDispatch, useSelector} from "react-redux";
+import {ADD_DAY, SUB_DAY} from "../../redux/actionTypes";
+import {addDayAction, subDayAction} from "../../redux/actions";
 
 function PlanCreator(props) {
 
@@ -79,8 +81,8 @@ function PlanCreator(props) {
 }
 
 
-const addDay = () => ({type: 'ADD_DAY'})
-const subDay = (number) => ({type: 'SUB_DAY', dayNumber: number})
+const addDay = () => (addDayAction())
+const subDay = (number) => (subDayAction(number))
 
 
 

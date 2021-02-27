@@ -1,0 +1,5 @@
+export const ADD_DAY = "ADD_DAY"
+export const SUB_DAY = "SUB_DAY "
+export const ADD_EXERCISE = "ADD_EXERCISE"
+export const SUB_EXERCISE = "SUB_EXERCISE"
+export const HANDLE_EXERCISE_FIELD_CHANGE = "HANDLE_EXERCISE_FIELD_CHANGE"
